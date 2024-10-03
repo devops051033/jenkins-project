@@ -5,7 +5,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git url: 'git@github.com:devops051033/jenkins-project.git', branch: 'basicJenkinsPiplineFromSCM'
+                git url: 'https://git@github.com:devops051033/jenkins-project.git', branch: 'basicJenkinsPiplineFromSCM'
                 sh "ls -ltr"
             }
         }
