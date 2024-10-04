@@ -12,6 +12,7 @@ pipeline {
         stage('Setup') {
             steps {
                 sh "cd /"
+                sh "pwd"
                 sh "source venv/bin/activate"
                 sh "sudo pip install -r requirements.txt"
             }
