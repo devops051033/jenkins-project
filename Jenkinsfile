@@ -11,7 +11,7 @@ pipeline {
         }
         stage('Setup') {
             steps {
-                sh "cd /"
+                sh "cd ~"
                 sh "source venv/bin/activate"
                 sh "pip install -r requirements.txt"
             }
