@@ -11,8 +11,9 @@ pipeline {
         }
         stage('Setup') {
             steps {
-                sh "cd /"
                 sh "pwd"
+                sh "apt install python3-venv"
+                sh "python3 -m venv venv"
                 sh "source venv/bin/activate"
                 sh "sudo pip install -r requirements.txt"
             }
