@@ -47,9 +47,8 @@ pipeline {
                     sh '''
                     scp -i $MY-SSH-KEY -o StrictHostKeyChecking=no myapp.zip 
                     ${username}@${SERVER_IP}:/home/ubuntu/
-                    
-                    ssh -i $MY-SSH-KEY -o StrictHostKeyChecking=no myapp.zip 
-                    ${username}@${SERVER_IP} <<
+
+                    ssh -i $MY-SSH-KEY -o StrictHostKeyChecking=no ${username}@${SERVER_IP} <<
                     EOF
                         unzip -o /home/ubuntu/myapp.zip -d /home/ubuntu/app/
                         source app/venv/bin/activate
