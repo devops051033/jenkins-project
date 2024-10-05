@@ -47,6 +47,7 @@ pipeline {
                     sh '''
                     scp -i $MY-SSH-KEY -o StrictHostKeyChecking=no myapp.zip 
                     ${username}@${SERVER_IP}:/home/ubuntu/
+                    
                     ssh -i $MY-SSH-KEY -o StrictHostKeyChecking=no myapp.zip 
                     ${username}@${SERVER_IP} <<
                     EOF
