@@ -14,7 +14,14 @@ pipeline {
         stage('Setup') {
             steps {
                 dir("/var/jenkins_home/workspace/${JOB_NAME}") { // Use JOB_NAME variable
-                    sh "pip install -r requirements.txt"
+                    // Create a virtual environment
+                    sh "python3 -m venv venv"
+                    // Activate the virtual environment and install requirements
+                    sh """
+                    source venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                    """
                 }
             }
         }
