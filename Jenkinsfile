@@ -40,6 +40,27 @@ pipeline {
             }
         }
 
+        stage('Deploy to Prod'){
+            steps{
+                withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key',
+                keyFileVariable:'MY-SSH-KEY', usernameVariable: 'username')]){
+                    sh '''
+                    scp -i $MY-SSH-KEY -o StrictHostKeyChecking=no myapp.zip 
+                    ${username}@${SERVER_IP}:/home/ubuntu/
+                    ssh -i $MY-SSH-KEY -o StrictHostKeyChecking=no myapp.zip 
+                    ${username}@${SERVER_IP} <<
+                    EOF
+                        unzip -o /home/ubuntu/myapp.zip -d /home/ubuntu/app/
+                        source app/venv/bin/activate
+                        cd /home/ubuntu/app
+                        pip install -r requirements.txt
+                        sudo systemctl restart flaskapp.service
+
+                    '''
+                }
+            }
+        }
+
 
        
     }
