@@ -29,6 +29,8 @@ pipeline {
         stage('Deploy'){
             steps{  
                 dir("/var/jenkins_home/workspace/${JOB_NAME}") {
+                    sh "python3 -m venv venv" // Create virtual environment
+                    sh "bash -c 'source venv/bin/activate && pip install -r requirements.txt'" // Activate and install
                     sh "python3 app.py"
                 }
             }
