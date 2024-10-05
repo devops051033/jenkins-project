@@ -26,5 +26,13 @@ pipeline {
                 }
             }
         }
+        stage('Deploy'){
+            steps{  
+                dir("/var/jenkins_home/workspace/${JOB_NAME}") {
+                    sh "python3 app.py"
+                }
+            }
+    
+        }
     }
 }
