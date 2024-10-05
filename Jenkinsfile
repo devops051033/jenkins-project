@@ -37,28 +37,40 @@ pipeline {
                 echo "zipping application code"
                 sh "zip -r myapp.zip ./* -x '*.git'"
                 sh "ls -lart"
+                echo "===present working directory ===="
+                sh "pwd"
             }
         }
 
         stage('Deploy to Prod'){
-            steps{
-                withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key',
-                keyFileVariable:'MY-SSH-KEY', usernameVariable: 'username')]){
-                    sh '''
-                    scp -i $MY-SSH-KEY -o StrictHostKeyChecking=no myapp.zip 
-                    ${username}@${SERVER_IP}:/home/ubuntu/
+            steps {
+        withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key',
+                keyFileVariable: 'MY-SSH-KEY', usernameVariable: 'username')]) {
+            sh '''
+            pwd
+            # Transfer the application zip file to the remote server
+            scp -i $MY-SSH-KEY -o StrictHostKeyChecking=no myapp.zip ${username}@${SERVER_IP}:/home/ubuntu/
 
-                    ssh -i $MY-SSH-KEY -o StrictHostKeyChecking=no ${username}@${SERVER_IP} <<
-                    EOF
-                        unzip -o /home/ubuntu/myapp.zip -d /home/ubuntu/app/
-                        source app/venv/bin/activate
-                        cd /home/ubuntu/app
-                        pip install -r requirements.txt
-                        sudo systemctl restart flaskapp.service
-
-                    '''
-                }
-            }
+            # SSH into the remote server to perform the necessary steps
+            ssh -i $MY-SSH-KEY -o StrictHostKeyChecking=no ${username}@${SERVER_IP} << EOF
+                # Unzip the application
+                unzip -o /home/ubuntu/myapp.zip -d /home/ubuntu/app/
+                
+                # Activate the virtual environment
+                source /home/ubuntu/app/venv/bin/activate
+                
+                # Change directory to the application folder
+                cd /home/ubuntu/app
+                
+                # Install requirements
+                pip install -r requirements.txt
+                
+                # Restart the Flask service
+                sudo systemctl restart flaskapp.service
+            EOF
+            '''
+        }
+    }
         }
 
 
