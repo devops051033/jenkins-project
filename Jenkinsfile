@@ -1,11 +1,16 @@
 pipeline {
     agent any
+
+    environment {
+        SERVER_IP = credentials('app-server-ip')
+    }
     options { skipDefaultCheckout() }
+
     stages {
         stage('Checkout') {
             steps {
-                dir("/var/jenkins_home/workspace/${JOB_NAME}") {
-                    git url: 'https://github.com/devops051033/jenkins-project.git', branch: 'basicJenkinsPiplineFromSCM'
+                 dir("/var/jenkins_home/workspace/${JOB_NAME}"){
+                    git url: 'https://github.com/devops051033/jenkins-project.git', branch: 'singleServerAppDeployment'
                     sh "ls -ltr"
                 }
             }
@@ -26,15 +31,16 @@ pipeline {
                 }
             }
         }
-        stage('Deploy'){
-            steps{  
-                dir("/var/jenkins_home/workspace/${JOB_NAME}") {
-                    sh "python3 -m venv venv" // Create virtual environment
-                    sh "bash -c 'source venv/bin/activate && pip install -r requirements.txt'" // Activate and install
-                    sh "python3 app.py"
-                }
+
+        stage('Package code'){
+            steps{
+                echo "zipping application code"
+                sh "zip -r myapp.zip ./* -x '*.git'"
+                sh "ls -lart"
             }
-    
         }
+
+
+       
     }
 }
