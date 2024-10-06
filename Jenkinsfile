@@ -57,6 +57,8 @@ pipeline {
                 unzip -o /home/ubuntu/myapp.zip -d /home/ubuntu/app/
                 
                 rm -rf /home/ubuntu/app/venv
+
+                cd /home/ubuntu/app
                 
                 python3 -m venv new-venv
 
@@ -69,9 +71,13 @@ pipeline {
                 # Install requirements
                 pip install -r requirements.txt
                 
+                sudo systemctl daemon-reload
+
 
                 # Restart the Flask service
                 sudo systemctl restart flaskapp.service
+
+                sudo systemctl status flaskapp.service
 EOF
             '''
         }
