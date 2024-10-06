@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         SERVER_IP = credentials('app-server-ip')
+        IMAGE_NAME = 'samdocker33/kk-flask-app'
+        IMAGE_TAG = "${IMAGE_NAME}:${env.GIT_COMMIT}"
     }
     options { skipDefaultCheckout() }
 
@@ -32,43 +34,23 @@ pipeline {
             }
         }
 
-        stage('Package code'){
+        stage('Login to docker hub') {
             steps{
-                echo "zipping application code"
-                sh "zip -r myapp.zip ./* -x '*.git'"
-                sh "ls -lart"
-                echo "===present working directory ===="
-                sh "pwd"
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-cred',
+                usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh 'echo ${PASSWORD} | docker login -u ${USERNAME} --password-stdin'
+                }
+                echo 'Login successfully'
             }
         }
 
-        stage('Deploy to Prod'){
-            steps {
-        withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key',
-                keyFileVariable: 'MY_SSH_KEY', usernameVariable: 'username')]) {
-            sh '''
-            pwd
-            # Transfer the application zip file to the remote server
-            scp -i $MY_SSH_KEY -o StrictHostKeyChecking=no myapp.zip ${username}@${SERVER_IP}:/home/ubuntu/
-
-            # SSH into the remote server to perform the necessary steps
-            ssh -i $MY_SSH_KEY -o StrictHostKeyChecking=no ${username}@${SERVER_IP} << EOF
-                # Unzip the application
-                unzip -o /home/ubuntu/myapp.zip -d /home/ubuntu/app/
-                rm -rf /home/ubuntu/app/venv
-                cd /home/ubuntu/app
-                python3 -m venv new-venv
-                source new-venv/bin/activate
-                cd /home/ubuntu/app
-                pip install -r requirements.txt
-                sudo systemctl daemon-reload
-                sudo systemctl restart flaskapp.service
-                sudo systemctl status flaskapp.service
-EOF
-            '''
+        stage('Build Docker Image'){
+            steps{
+                
+                sh 'docker build -t ${IMAGE_TAG} .'
+                echo "Docker image build successfully"
+                sh 'docker image ls'
+            }
         }
-    }
-        }
-
     }
 }
