@@ -45,14 +45,14 @@ pipeline {
         stage('Deploy to Prod'){
             steps {
         withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key',
-                keyFileVariable: 'MY-SSH-KEY', usernameVariable: 'username')]) {
+                keyFileVariable: 'MY_SSH_KEY', usernameVariable: 'username')]) {
             sh '''
             pwd
             # Transfer the application zip file to the remote server
-            scp -i $MY-SSH-KEY -o StrictHostKeyChecking=no myapp.zip ${username}@${SERVER_IP}:/home/ubuntu/
+            scp -i $MY_SSH_KEY -o StrictHostKeyChecking=no myapp.zip ${username}@${SERVER_IP}:/home/ubuntu/
 
             # SSH into the remote server to perform the necessary steps
-            ssh -i $MY-SSH-KEY -o StrictHostKeyChecking=no ${username}@${SERVER_IP} << EOF
+            ssh -i $MY_SSH_KEY -o StrictHostKeyChecking=no ${username}@${SERVER_IP} << EOF
                 # Unzip the application
                 unzip -o /home/ubuntu/myapp.zip -d /home/ubuntu/app/
                 
