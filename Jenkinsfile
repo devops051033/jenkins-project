@@ -16,6 +16,11 @@ pipeline {
                     sh "ls -ltr"
                     echo "The current commit hash is: ${env.GIT_COMMIT}"
 
+                    // Manually retrieve the commit hash
+                script {
+                    def gitCommit = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
+                    echo "The current commit hash is: ${gitCommit}"
+                }
             }
         }
         stage('Setup') {
