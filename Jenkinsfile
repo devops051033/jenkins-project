@@ -4,7 +4,7 @@ pipeline {
     environment {
         SERVER_IP = credentials('app-server-ip')
         IMAGE_NAME = 'samdocker33/kk-flask-app'
-        IMAGE_TAG = '' // Initially set to an empty value
+        // Remove IMAGE_TAG from here since it's dynamic
     }
     options { skipDefaultCheckout() }
 
@@ -20,9 +20,13 @@ pipeline {
                 script {
                     def gitCommit = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
                     echo "The current commit hash is: ${gitCommit}"
+
                     // Set IMAGE_TAG dynamically based on the commit hash
-                    env.IMAGE_TAG = "${env.IMAGE_NAME}:${gitCommit}"
-                    echo "The image tag is: ${env.IMAGE_TAG}"
+                    def imageTag = "${IMAGE_NAME}:${gitCommit}"
+                    echo "The image tag is: ${imageTag}"
+
+                    // Use the imageTag variable in subsequent stages
+                    env.IMAGE_TAG = imageTag
                 }
             }
         }
