@@ -67,8 +67,10 @@ pipeline {
         }
 
         stage('Push Docker Image'){
-            sh "docker push ${env.IMAGE_TAG}"
-            echo 'docker image pushed successfully !!! great '
+            steps{
+                sh "docker push ${env.IMAGE_TAG}"
+                echo 'docker image pushed successfully !!! great '
+            }   
         }
     }
 }
