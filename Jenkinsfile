@@ -12,7 +12,7 @@ pipeline {
         stage('Checkout') {
             steps {
                  dir("/var/jenkins_home/workspace/${JOB_NAME}"){
-                    git url: 'https://github.com/devops051033/jenkins-project.git', branch: 'singleServerAppDeployment'
+                    git url: 'https://github.com/devops051033/jenkins-project.git', branch: 'appCodeDocarize'
                     sh "ls -ltr"
                 }
             }
