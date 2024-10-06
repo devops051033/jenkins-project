@@ -69,7 +69,7 @@ pipeline {
                 # Install requirements
                 pip install -r requirements.txt
                 
-                sudo systectl reload flaskapp.service
+                sudo systemctl reload flaskapp.service
 
                 # Restart the Flask service
                 sudo systemctl restart flaskapp.service
