@@ -56,6 +56,10 @@ pipeline {
                 # Unzip the application
                 unzip -o /home/ubuntu/myapp.zip -d /home/ubuntu/app/
                 
+                rm -rf /home/ubuntu/app/venv
+                
+                python3 -m venv new-venv
+
                 # Activate the virtual environment
                 source new-venv/bin/activate
                 
@@ -66,6 +70,7 @@ pipeline {
                 pip install -r requirements.txt
                 
                 sudo systectl reload flaskapp.service
+
                 # Restart the Flask service
                 sudo systemctl restart flaskapp.service
 EOF
