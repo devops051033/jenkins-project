@@ -55,28 +55,14 @@ pipeline {
             ssh -i $MY_SSH_KEY -o StrictHostKeyChecking=no ${username}@${SERVER_IP} << EOF
                 # Unzip the application
                 unzip -o /home/ubuntu/myapp.zip -d /home/ubuntu/app/
-                
                 rm -rf /home/ubuntu/app/venv
-
                 cd /home/ubuntu/app
-                
                 python3 -m venv new-venv
-
-                # Activate the virtual environment
                 source new-venv/bin/activate
-                
-                # Change directory to the application folder
                 cd /home/ubuntu/app
-                
-                # Install requirements
                 pip install -r requirements.txt
-                
                 sudo systemctl daemon-reload
-
-
-                # Restart the Flask service
                 sudo systemctl restart flaskapp.service
-
                 sudo systemctl status flaskapp.service
 EOF
             '''
@@ -84,7 +70,5 @@ EOF
     }
         }
 
-
-       
     }
 }
