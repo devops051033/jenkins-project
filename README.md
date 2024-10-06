@@ -26,3 +26,20 @@ docker run -p 8080:8080 -p 50000:50000 -d \
   -v jenkins_home:/var/jenkins_home \
   -v /home/user/jenkins_jobs:/var/jenkins_home/workspace \
   my-jenkins-image
+
+
+# Use this configuration "flaskapp-systemd.service" in the host where you are doploying the app
+
+[Unit]
+Description=flask app
+After=network.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/app/
+Environment="PATH=/home/ubuntu/app/venv/bin"
+ExecStart=/home/ubuntu/app/venv/bin/python3 /home/ubuntu/app/app.py
+
+[Install]
+WantedBy=multi-user.target
