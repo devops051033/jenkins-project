@@ -67,7 +67,7 @@ pipeline {
                 
                 # Restart the Flask service
                 sudo systemctl restart flaskapp.service
-            EOF
+EOF
             '''
         }
     }
